@@ -4,6 +4,7 @@ import { TaskCreate } from "./endpoints/taskCreate";
 import { TaskDelete } from "./endpoints/taskDelete";
 import { TaskFetch } from "./endpoints/taskFetch";
 import { TaskList } from "./endpoints/taskList";
+import { todoistWebhook } from "./endpoints/todoistWebhook";
 
 // Start a Hono app
 const app = new Hono<{ Bindings: Env }>();
@@ -19,8 +20,7 @@ openapi.post("/api/tasks", TaskCreate);
 openapi.get("/api/tasks/:taskSlug", TaskFetch);
 openapi.delete("/api/tasks/:taskSlug", TaskDelete);
 
-// You may also register routes for non OpenAPI directly on Hono
-// app.get('/test', (c) => c.text('Hono!'))
+app.post("/api/webhooks/todoist", todoistWebhook);
 
 // Export the Hono app
 export default app;

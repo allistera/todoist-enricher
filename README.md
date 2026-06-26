@@ -23,3 +23,13 @@ This is an example project made to be used as a quick start into building OpenAP
 1. Run `wrangler dev` to start a local instance of the API.
 2. Open `http://localhost:8787/` in your browser to see the Swagger interface where you can try the endpoints.
 3. Changes made in the `src/` folder will automatically trigger the server to reload, you only need to refresh the Swagger interface.
+
+## Todoist webhooks
+
+The Worker exposes `POST /api/webhooks/todoist` for Todoist task creation webhooks. Configure the webhook in Todoist for the `item:added` event and set the Worker secret to your Todoist app client secret:
+
+```sh
+wrangler secret put TODOIST_CLIENT_SECRET
+```
+
+The endpoint verifies Todoist's `X-Todoist-Hmac-SHA256` header before parsing the payload.
