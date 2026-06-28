@@ -147,7 +147,7 @@ async function enrichTask(
 			"Authorization": `Bearer ${openaiApiKey}`,
 		},
 		body: JSON.stringify({
-			model: "gpt-4o-mini",
+			model: "gpt-4o",
 			messages: [
 				{
 					role: "system",
