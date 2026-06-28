@@ -1,0 +1,3 @@
+TODOIST_CLIENT_SECRET=your_todoist_webhook_client_secret
+TODOIST_API_TOKEN=your_todoist_personal_api_token
+OPENAI_API_KEY=your_openai_api_key

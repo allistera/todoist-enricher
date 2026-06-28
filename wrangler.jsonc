@@ -31,11 +31,7 @@
 	 * Note: Use secrets to store sensitive data.
 	 * https://developers.cloudflare.com/workers/configuration/secrets/
 	 */
-	"vars": {
-		"TODOIST_CLIENT_SECRET": "",
-		"TODOIST_API_TOKEN": "",
-		"OPENAI_API_KEY": ""
-	}
+	// "vars": {  "MY_VARIABLE": "production_value" }
 	/**
 	 * Static Assets
 	 * https://developers.cloudflare.com/workers/static-assets/binding/
