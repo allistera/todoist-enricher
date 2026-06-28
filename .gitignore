@@ -31,4 +31,7 @@
 !/tap-snapshots/
 !/test/
 !/tsconfig.json
+!/src/
+!/wrangler.jsonc
+!/.dev.vars.example
 tap-testdir*/

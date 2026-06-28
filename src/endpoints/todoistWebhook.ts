@@ -23,6 +23,7 @@ const TodoistTaskSchema = z.object({
 	content: z.string(),
 	description: z.string().optional().nullable(),
 	parent_id: z.union([z.string(), z.number()]).optional().nullable(),
+	labels: z.array(z.string()).optional().nullable(),
 });
 
 export async function todoistWebhook(c: AppContext) {
@@ -90,25 +91,31 @@ export async function todoistWebhook(c: AppContext) {
 
 	let enrichedData: { content: string; description: string; subtasks?: string[] } | null = null;
 
-	if (task.description && task.description.trim() !== "") {
-		const openaiApiKey = c.env.OPENAI_API_KEY;
-		const todoistApiToken = c.env.TODOIST_API_TOKEN;
+	const hasEnrichLabel = task.labels && task.labels.some(label => label.toLowerCase() === "enrich");
 
-		if (!openaiApiKey || !todoistApiToken) {
-			console.warn("Skipping task enrichment because OPENAI_API_KEY or TODOIST_API_TOKEN is not configured");
-		} else {
-			try {
-				enrichedData = await enrichTask(
-					{ id: taskId, content: task.content, description: task.description },
-					openaiApiKey,
-					todoistApiToken
-				);
-			} catch (error) {
-				console.error("Failed to enrich task:", error);
+	if (hasEnrichLabel) {
+		if (task.description && task.description.trim() !== "") {
+			const openaiApiKey = c.env.OPENAI_API_KEY;
+			const todoistApiToken = c.env.TODOIST_API_TOKEN;
+
+			if (!openaiApiKey || !todoistApiToken) {
+				console.warn("Skipping task enrichment because OPENAI_API_KEY or TODOIST_API_TOKEN is not configured");
+			} else {
+				try {
+					enrichedData = await enrichTask(
+						{ id: taskId, content: task.content, description: task.description },
+						openaiApiKey,
+						todoistApiToken
+					);
+				} catch (error) {
+					console.error("Failed to enrich task:", error);
+				}
 			}
+		} else {
+			console.log(`Task ${taskId} has the 'Enrich' label but does not have a description; skipping enrichment.`);
 		}
 	} else {
-		console.log(`Task ${taskId} does not have a description; skipping enrichment.`);
+		console.log(`Task ${taskId} does not have the 'Enrich' label; skipping enrichment.`);
 	}
 
 	return c.json({
@@ -120,6 +127,7 @@ export async function todoistWebhook(c: AppContext) {
 			content: task.content,
 			description: task.description,
 			parent_id: task.parent_id ? String(task.parent_id) : null,
+			labels: task.labels || [],
 		},
 		enriched: enrichedData,
 	});
